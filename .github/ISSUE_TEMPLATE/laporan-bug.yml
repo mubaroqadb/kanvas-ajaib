@@ -1,0 +1,25 @@
+name: Laporan bug
+description: Ada yang tidak berjalan sebagaimana mestinya
+labels: [bug]
+body:
+  - type: textarea
+    id: apa
+    attributes:
+      label: Apa yang terjadi?
+      description: Ceritakan apa yang terlihat dan apa yang seharusnya terjadi.
+    validations:
+      required: true
+  - type: textarea
+    id: langkah
+    attributes:
+      label: Langkah untuk mengulanginya
+      placeholder: "1. Buka Pulau 2\n2. Pilih level Kucing\n3. ..."
+  - type: input
+    id: perangkat
+    attributes:
+      label: Perangkat dan browser
+      placeholder: "Contoh: tablet Android, Chrome 131"
+  - type: textarea
+    id: gambar
+    attributes:
+      label: Tangkapan layar (bila ada)

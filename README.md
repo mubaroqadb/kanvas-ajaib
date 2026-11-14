@@ -19,3 +19,23 @@ Buka `index.html` langsung di browser, atau sajikan folder ini lewat server stat
 game bisa dipasang sebagai aplikasi (PWA) dan berjalan offline.
 
 Tanpa dependensi, tanpa akun, tanpa iklan. Semua data tersimpan di perangkat.
+
+## Uji
+
+```
+npm test
+```
+
+Menjalankan empat paket uji Node (skor gambar, seni dan audio, penilai Nalar, konten). Uji yang sama berjalan
+otomatis di GitHub Actions.
+
+## Berkontribusi
+
+Masukan dan perbaikan sangat diterima, baik dari guru dan orang tua maupun pemrogram. Laporkan bug atau usulkan
+level dan teka-teki lewat [isu](../../issues), atau kirim pull request. Baca [CONTRIBUTING.md](CONTRIBUTING.md)
+dan [dokumen desain](docs/GAME-DESIGN.md) lebih dulu.
+
+## Lisensi
+
+Kode dilisensikan di bawah [MIT](LICENSE). Dokumentasi di `docs/` dilisensikan di bawah
+[CC BY 4.0](docs/LICENSE.md).

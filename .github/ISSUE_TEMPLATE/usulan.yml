@@ -1,0 +1,26 @@
+name: Usulan level, teka-teki, atau fitur
+description: Gambar baru, teka-teki Nalar baru, atau ide untuk game
+labels: [usulan]
+body:
+  - type: dropdown
+    id: jenis
+    attributes:
+      label: Jenis usulan
+      options:
+        - Level gambar baru
+        - Teka-teki Nalar baru atau set soal baru
+        - Fitur atau perbaikan tampilan
+        - Lainnya
+    validations:
+      required: true
+  - type: textarea
+    id: isi
+    attributes:
+      label: Usulannya
+      description: Untuk level gambar, sebutkan bentuknya. Untuk teka-teki, sebutkan topik matematikanya, soalnya, dan jawaban yang diterima.
+    validations:
+      required: true
+  - type: textarea
+    id: alasan
+    attributes:
+      label: Mengapa ini baik untuk anak 8-11 tahun?

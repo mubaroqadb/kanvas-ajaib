@@ -1,0 +1,24 @@
+name: Uji
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  uji:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Uji skor, level, status, ekonomi
+        run: node tests/run.js
+      - name: Uji seni, audio, efek, ikon
+        run: node tests/run-art.js
+      - name: Uji penilai Nalar
+        run: node tests/run-reason.js
+      - name: Uji konten (set soal, Pulau 5, Tantangan Harian)
+        run: node tests/run-content.js

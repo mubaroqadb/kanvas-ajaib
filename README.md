@@ -153,3 +153,16 @@ dan [dokumen desain](docs/GAME-DESIGN.md) lebih dulu.
 
 Kode dilisensikan di bawah [MIT](LICENSE). Dokumentasi di `docs/` dilisensikan di bawah
 [CC BY 4.0](docs/LICENSE.md).
+
+---
+
+<p align="center">
+  <img src="apple-touch-icon.png" width="72" alt="Noko">
+</p>
+
+<p align="center"><i>
+Built with love, so that the children of Indonesia can keep creating, undiminished by time and change.<br>
+Art and logic must keep being sharpened.<br>
+There is no failed potential, only potential not yet fully realized.<br>
+Everything is hope, reaching for dreams and the will to achieve them.
+</i></p>

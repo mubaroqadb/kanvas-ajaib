@@ -157,7 +157,7 @@ Kode dilisensikan di bawah [MIT](LICENSE). Dokumentasi di `docs/` dilisensikan d
 ---
 
 <p align="center">
-  <img src="apple-touch-icon.png" width="72" alt="Noko">
+  <img src="icon-192.png" width="72" alt="Noko">
 </p>
 
 <p align="center"><i>

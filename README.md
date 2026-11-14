@@ -131,7 +131,16 @@ Klik ikon pasang di ujung kanan bilah alamat, lalu **Instal**.
 - **Ekspor CSV** catatan percobaan dan cadangan JSON profil. Bila data dipakai untuk penelitian, diperlukan
   persetujuan orang tua dan izin etik lembaga.
 
-## Menjalankan dan menguji
+## Berkontribusi
+
+Masukan dan perbaikan sangat diterima, baik dari guru dan orang tua maupun pemrogram. Laporkan bug atau usulkan
+level dan teka-teki lewat [isu](../../issues), atau kirim pull request. Baca [CONTRIBUTING.md](CONTRIBUTING.md)
+dan [dokumen desain](docs/GAME-DESIGN.md) lebih dulu.
+
+## Untuk pengembang
+
+> Bagian ini hanya untuk yang ingin mengubah kode game. Untuk bermain, orang tua dan anak tidak perlu
+> melakukan apa pun di sini: cukup buka alamat game di browser atau pasang di HP (lihat bagian di atas).
 
 Buka `index.html` langsung di browser, atau sajikan folder ini dengan server statis apa pun
 (misalnya `python3 -m http.server`). Lewat http/https, game bisa dipasang sebagai aplikasi dan berjalan offline.
@@ -142,12 +151,6 @@ npm test
 
 Menjalankan empat paket uji Node: skor gambar, seni dan audio, penilai Nalar, dan konten. Uji yang sama berjalan
 otomatis di GitHub Actions pada setiap push dan pull request.
-
-## Berkontribusi
-
-Masukan dan perbaikan sangat diterima, baik dari guru dan orang tua maupun pemrogram. Laporkan bug atau usulkan
-level dan teka-teki lewat [isu](../../issues), atau kirim pull request. Baca [CONTRIBUTING.md](CONTRIBUTING.md)
-dan [dokumen desain](docs/GAME-DESIGN.md) lebih dulu.
 
 ## Lisensi
 

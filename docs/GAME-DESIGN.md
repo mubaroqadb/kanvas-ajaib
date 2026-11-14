@@ -364,7 +364,7 @@ menyediakan ekspor lokal.
 ## 16. Arsitektur Teknis
 
 ```
-(akar repo)
+(akar game)
   index.html            shell, layar, modal
   manifest.webmanifest  PWA
   sw.js                 cache offline (aktif bila disajikan lewat http/https)

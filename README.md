@@ -32,8 +32,10 @@ Pasang dan buka sekali selagi tersambung internet; setelah itu semua berkas ters
    <img src="docs/img/safari-3-tambah.png" width="320" alt="Pilihan Add to Home Screen">
 4. Pastikan **Open as Web App** menyala, lalu ketuk **Add** (Tambah).
 
-   <img src="docs/img/safari-4-add.png" width="320" alt="Layar Add to Home Screen dengan tombol Add">
+   <img src="docs/img/safari-4-add.png" width="360" alt="Layar Add to Home Screen dengan tombol Add">
 5. Ikon Kanvas Ajaib muncul di layar utama. Buka dari ikon itu.
+
+   <img src="docs/img/safari-5-ikon.png" width="110" alt="Ikon Kanvas Ajaib di layar utama iPhone">
 
 ### Android (Chrome)
 

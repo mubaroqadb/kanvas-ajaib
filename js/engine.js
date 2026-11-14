@@ -204,9 +204,9 @@ KA.engine = (function () {
     c.width = B; c.height = B;
     const x = c.getContext("2d");
     x.clearRect(0, 0, B, B);
-    const known = /^t[1-4]$/.test(theme || "");
+    const known = /^t[1-5]$/.test(theme || "");
     if (mode === "nalar") { // kertas polos; kisi teka-teki digambar sendiri di renderPuzzle
-      x.fillStyle = isDarkPaper() ? "#2B3150" : "#FFFDF6";
+      x.fillStyle = theme === "t5" ? "#164766" : isDarkPaper() ? "#2B3150" : "#FFFDF6";
       x.fillRect(0, 0, B, B);
     } else if (KA.art && KA.art.paintBackground && (known || paper)) {
       KA.art.paintBackground(x, B, known ? theme : "t1", paper || null);

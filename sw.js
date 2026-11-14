@@ -1,10 +1,14 @@
 /* Kanvas Ajaib: service worker: cache-first untuk semua aset (aktif hanya via http/https) */
-const VERSION = "ka-v3.2.0";
+const VERSION = "ka-v3.2.1";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon.svg",
+  "./apple-touch-icon.png",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon-maskable-512.png",
   "./css/style.css",
   "./js/storage.js",
   "./js/audio.js",

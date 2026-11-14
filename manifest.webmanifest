@@ -1,0 +1,17 @@
+{
+  "name": "Kanvas Ajaib",
+  "short_name": "Kanvas Ajaib",
+  "description": "Petualangan menggambar untuk anak: gambarmu menjadi hidup!",
+  "lang": "id",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FFF8EC",
+  "theme_color": "#2D6FD6",
+  "categories": ["education", "kids", "games"],
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

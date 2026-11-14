@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2D6FD6">
+<meta name="description" content="Kanvas Ajaib: petualangan menggambar untuk anak. Gambarmu menjadi hidup!">
+<title>Kanvas Ajaib</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-island="1">
+<div id="app">
+
+  <!-- ===== BERANDA ===== -->
+  <section id="scr-home" class="screen page" aria-label="Beranda">
+    <div class="page-inner">
+      <header class="home-head">
+        <div class="home-noko">
+          <span id="homeNoko" class="noko-big" aria-hidden="true"></span>
+          <p id="homeSay" class="bubble" aria-live="polite">Halo!</p>
+        </div>
+        <div class="home-meta">
+          <h1 class="logo"><span data-ic="palette"></span> Kanvas Ajaib</h1>
+          <div class="chips">
+            <button id="chipProfile" class="chip chip-btn" aria-label="Ganti profil"><span data-ic="user"></span> <b id="homeName">Pemain</b></button>
+            <span class="chip coin" aria-label="Koin"><span class="ic-coin" data-ic="coin"></span> <b id="chipCoins">0</b></span>
+            <span class="chip star" aria-label="Bintang"><span class="ic-star" data-ic="star"></span> <b id="chipStars">0</b></span>
+          </div>
+        </div>
+      </header>
+
+      <button id="dailyCard" class="daily-card" aria-label="Tantangan Harian"></button>
+
+      <nav id="islandTabs" class="island-tabs" aria-label="Pulau"></nav>
+      <p id="islandLine" class="island-line"></p>
+
+      <div id="levelGrid" class="level-grid"></div>
+
+      <div id="passRow" class="pass-row"></div>
+
+      <section class="wall" aria-labelledby="wallTitle">
+        <h2 id="wallTitle" class="sec-title"><span data-ic="pin"></span> Dinding Keluarga</h2>
+        <div id="wallGrid" class="wall-grid"></div>
+      </section>
+
+      <nav class="menu-grid" aria-label="Menu">
+        <button id="btnFree" class="menu-btn hero"><span data-ic="palette"></span><small>Kanvas Bebas</small></button>
+        <button id="btnShop" class="menu-btn"><span data-ic="cart"></span><small>Toko</small></button>
+        <button id="btnGallery" class="menu-btn"><span data-ic="image"></span><small>Galeri</small></button>
+        <button id="btnBadges" class="menu-btn"><span data-ic="award"></span><small>Lencana</small></button>
+        <button id="btnFamily" class="menu-btn"><span data-ic="users"></span><small>Keluarga</small></button>
+        <button id="btnSettings" class="menu-btn"><span data-ic="settings"></span><small>Pengaturan</small></button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ===== LAYAR GAME ===== -->
+  <section id="scr-game" class="screen" hidden aria-label="Menggambar">
+    <header class="game-head">
+      <button id="btnBack" class="icon-btn" aria-label="Kembali ke beranda"><span data-ic="home"></span></button>
+      <div class="game-title">
+        <span id="gameTitle">Level</span>
+        <span id="modeTag" class="mode-tag"></span>
+      </div>
+      <span id="topStreak" class="chip streak" hidden><span data-ic="flame"></span> <b id="streakText">×1.0</b></span>
+      <span id="topTimer" class="chip timer" hidden><span data-ic="clock"></span> <b id="timerText">0:00</b></span>
+    </header>
+
+    <div id="duelBar" class="duel-bar" hidden>
+      <div class="duel-row ghost"><span class="duel-who"><span data-ic="ghost"></span> Hantu</span><span class="duel-track"><span id="duelGhost"></span></span></div>
+      <div class="duel-row me"><span class="duel-who"><span data-ic="pencil"></span> Kamu</span><span class="duel-track"><span id="duelMe"></span></span></div>
+    </div>
+
+    <button id="ideaCard" class="idea-card" hidden aria-label="Ganti ide gambar"><span data-ic="bulb"></span> <span id="ideaText">Gambar hewan kesukaanmu</span></button>
+
+    <div id="taskCard" class="task-card" hidden aria-live="polite">
+      <span id="taskStep" class="task-step">1/3</span>
+      <span class="task-body"><b id="taskText">Tugas</b><small id="taskReason" class="task-reason" hidden></small></span>
+      <span id="taskFrac" class="task-frac" hidden></span>
+    </div>
+
+    <div class="game-main">
+      <div class="stage">
+        <div id="canvasWrap" data-theme="t1">
+          <canvas id="tpl" width="800" height="800"></canvas>
+          <canvas id="paint" width="800" height="800"></canvas>
+          <canvas id="draw" width="800" height="800" aria-label="Kanvas gambar"></canvas>
+          <canvas id="fx" width="800" height="800"></canvas>
+          <div id="bigOverlay" hidden></div>
+        </div>
+        <div id="nokoCorner" class="noko-corner" aria-live="polite">
+          <p id="nokoSay" class="bubble small"></p>
+          <span id="nokoFace" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div id="tools" class="tools">
+        <div id="kindRow" class="tool-row kinds" role="group" aria-label="Alat" hidden></div>
+        <div id="colorRow" class="tool-row colors" role="group" aria-label="Warna"></div>
+        <div id="sizeRow" class="tool-row sizes" role="group" aria-label="Ukuran pena"></div>
+        <div id="stampRow" class="tool-row stamps" role="group" aria-label="Stiker" hidden></div>
+        <div class="tool-row actions">
+          <button id="btnUndo" class="tool-btn" aria-label="Urungkan"><span data-ic="undo"></span></button>
+          <button id="btnClear" class="tool-btn danger" aria-label="Hapus semua"><span data-ic="trash"></span></button>
+          <button id="btnHint" class="tool-btn hint" aria-label="Bantu aku" hidden><span data-ic="eye"></span><small>Bantu aku</small></button>
+          <button id="btnLamp" class="tool-btn lamp" aria-label="Lampu Noko" hidden><span data-ic="bulb"></span><small>Lampu</small></button>
+          <button id="btnSkip" class="tool-btn skip" aria-label="Lewati soal tambahan" hidden><span data-ic="next"></span><small>Lewati</small></button>
+          <button id="btnFinish" class="finish-btn" disabled><span data-ic="check"></span> <span id="finishLabel">Selesai</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HALAMAN MENU (diisi screens.js) ===== -->
+  <section id="scr-shop" class="screen page" hidden aria-label="Toko Noko">
+    <div class="page-inner">
+      <header class="page-head">
+        <button class="icon-btn" data-back aria-label="Kembali"><span data-ic="back"></span></button>
+        <h1><span data-ic="cart"></span> Toko Noko</h1>
+        <span class="chip coin"><span class="ic-coin" data-ic="coin"></span> <b id="shopCoins">0</b></span>
+      </header>
+      <div id="shopBody"></div>
+    </div>
+  </section>
+
+  <section id="scr-gallery" class="screen page" hidden aria-label="Galeri">
+    <div class="page-inner">
+      <header class="page-head">
+        <button class="icon-btn" data-back aria-label="Kembali"><span data-ic="back"></span></button>
+        <h1><span data-ic="image"></span> Galeri</h1>
+        <button id="btnBook" class="chip chip-btn book-btn"><span data-ic="bucket"></span> Buku Mewarnai</button>
+        <span id="galleryCount" class="chip">0/30</span>
+      </header>
+      <div id="galleryBody"></div>
+    </div>
+  </section>
+
+  <section id="scr-badges" class="screen page" hidden aria-label="Lencana">
+    <div class="page-inner">
+      <header class="page-head">
+        <button class="icon-btn" data-back aria-label="Kembali"><span data-ic="back"></span></button>
+        <h1><span data-ic="award"></span> Lencana</h1>
+        <span id="badgeCount" class="chip">0/18</span>
+      </header>
+      <div id="badgesBody"></div>
+    </div>
+  </section>
+
+  <section id="scr-family" class="screen page" hidden aria-label="Keluarga">
+    <div class="page-inner">
+      <header class="page-head">
+        <button class="icon-btn" data-back aria-label="Kembali"><span data-ic="back"></span></button>
+        <h1><span data-ic="users"></span> Keluarga</h1>
+        <span></span>
+      </header>
+      <div id="familyBody"></div>
+    </div>
+  </section>
+
+  <section id="scr-settings" class="screen page" hidden aria-label="Pengaturan">
+    <div class="page-inner">
+      <header class="page-head">
+        <button class="icon-btn" data-back aria-label="Kembali"><span data-ic="back"></span></button>
+        <h1><span data-ic="settings"></span> Pengaturan</h1>
+        <span></span>
+      </header>
+      <div id="settingsBody"></div>
+    </div>
+  </section>
+
+  <section id="scr-report" class="screen page" hidden aria-label="Laporan orang tua dan guru">
+    <div class="page-inner">
+      <header class="page-head">
+        <button class="icon-btn" data-back aria-label="Kembali"><span data-ic="back"></span></button>
+        <h1><span data-ic="chart"></span> Laporan</h1>
+        <span></span>
+      </header>
+      <div id="reportBody"></div>
+    </div>
+  </section>
+
+  <!-- ===== MODAL HASIL ===== -->
+  <div id="modalResult" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="resTitle">
+    <div class="modal-card result-card">
+      <button id="btnResHome" class="icon-btn corner-btn" aria-label="Ke beranda"><span data-ic="home"></span></button>
+      <div class="res-top">
+        <span id="resNoko" class="res-noko" aria-hidden="true"></span>
+        <div>
+          <h2 id="resTitle" class="res-title">Hebat!</h2>
+          <p id="resSub" class="res-sub"></p>
+        </div>
+      </div>
+      <div id="resDuel" class="res-duel" hidden></div>
+      <div id="resStars" class="res-stars" aria-label="Bintang"></div>
+      <div class="res-score-row">
+        <span class="res-score"><b id="resScore">0</b><small>/1000</small></span>
+        <span id="resGrade" class="grade">D</span>
+      </div>
+      <p id="resPerfect" class="res-perfect" hidden><span data-ic="sparkle"></span> Zona Sempurna!</p>
+      <div id="resNalar" class="res-nalar" hidden></div>
+      <div class="res-body">
+        <figure class="res-map">
+          <canvas id="resMap" width="440" height="440" aria-label="Peta ketepatan"></canvas>
+          <figcaption id="resMapSay"></figcaption>
+          <div class="map-legend" aria-hidden="true"><span><i class="lg g"></i>tepat</span> <span><i class="lg y"></i>dekat</span> <span><i class="lg r"></i>terlewat</span></div>
+        </figure>
+        <div id="resSubs" class="res-subs"></div>
+      </div>
+      <div id="resCoins" class="res-coins"></div>
+      <button id="btnAssist" class="assist-btn" hidden><span data-ic="wand"></span> Coba Mode Bantu</button>
+      <div class="res-btns">
+        <button id="btnRetry" class="modal-btn"><span data-ic="retry"></span> Coba Lagi</button>
+        <button id="btnColor" class="modal-btn"><span data-ic="bucket"></span> Warnai</button>
+        <button id="btnNext" class="modal-btn primary"><span data-ic="next"></span> <span id="nextLabel">Lanjut</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL UMUM (intro, pulau, profil, gerbang dewasa) ===== -->
+  <div id="modalBox" class="modal" hidden role="dialog" aria-modal="true">
+    <div id="modalBoxCard" class="modal-card"></div>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/scoring.js"></script>
+<script src="js/economy.js"></script>
+<script src="js/art.js"></script>
+<script src="js/reason.js"></script>
+<script src="js/puzzles.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/screens.js"></script>
+<script src="js/main.js"></script>
+<script>
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>

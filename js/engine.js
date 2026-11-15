@@ -782,7 +782,8 @@ KA.engine = (function () {
     if (mode === "free" && fills.length) renderPaint(true);
 
     if (level) {
-      const good = KA.scoring.strokeQuality(level, st.pts, tolMul);
+      /* Kilat: posisi dari ingatan wajar meleset, jadi penilaian per goresan dilonggarkan */
+      const good = KA.scoring.strokeQuality(level, st.pts, mode === "kilat" ? tolMul * 2 : tolMul);
       if (good) {
         streak++;
         if (mult() >= 2) streakMaxed = true;

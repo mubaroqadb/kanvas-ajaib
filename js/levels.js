@@ -415,7 +415,7 @@ KA.levels = (function () {
     "Pelangi", "Unicorn", "Kastel Awan", "Lentera", "Komet", "Medali", "Mahkota", "Pegasus", "Phoenix",
   ];
 
-  const MODE_TOL = { tiru: 1, titik: 1, langkah: 1.1, kilat: 1.35, cermin: 1, boss: 1 };
+  const MODE_TOL = { tiru: 1, titik: 1, langkah: 1.1, kilat: 1.2, cermin: 1, boss: 1 };
   const TOL_BASE = [6.5, 6, 5.5, 5.2, 5];
 
   /* Tantangan Nalar di posisi 4 dan 8 (data teka-teki di KA.puzzles; dimuat setelah levels.js) */

@@ -38,6 +38,7 @@ KA.main = (function () {
     good: ["Garisnya pas!", "Rapi sekali!", "Terus begitu!", "Mantap!"],
     great: ["Wah, keren sekali!", "Tanganmu stabil!", "Luar biasa!"],
     bad: ["Pelan-pelan saja", "Ikuti garisnya, ya", "Tidak apa-apa!"],
+    badMemory: ["Terus, kamu bisa!", "Ingat bentuknya", "Lanjutkan saja!"],
     start: ["Ayo mulai!", "Kamu pasti bisa!", "Siap menggambar?"],
   };
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -212,6 +213,7 @@ KA.main = (function () {
         if (d.reset) { syncActions(); break; }
         if (d.good && (d.mult || 1) >= 2) say(pick(LINES.great), "wow");
         else if (d.good) { if (Math.random() < 0.35) say(pick(LINES.good), "happy"); }
+        else if (G.lv && G.lv.mode === "kilat") { if (Math.random() < 0.4) say(pick(LINES.badMemory), "happy"); }
         else say(pick(LINES.bad), "oops");
         syncActions();
         break;
@@ -593,7 +595,10 @@ KA.main = (function () {
     try { KA.art.paintBackground(x, size, lv.theme, null); }
     catch (e) { x.fillStyle = lv.theme === "t4" ? "#232A4A" : lv.theme === "t5" ? "#164766" : "#FFFFFF"; x.fillRect(0, 0, size, size); }
     /* goresan anak, samar */
-    const strokes = entry ? entry.strokes : (E().snapshot() || {}).strokes || [];
+    let strokes = entry ? entry.strokes : (E().snapshot() || {}).strokes || [];
+    /* Kilat: tampilkan goresan dalam posisi yang sudah disejajarkan, sama seperti saat dinilai */
+    const al = res.align;
+    if (al) strokes = strokes.map((st) => Object.assign({}, st, { pts: st.pts.map(([px, py]) => [al.s * px + al.tx, al.s * py + al.ty]) }));
     x.save();
     x.globalAlpha = 0.28;
     try { KA.art.drawStrokes(x, strokes, size); }

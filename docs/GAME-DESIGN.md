@@ -52,7 +52,7 @@ ingatan visual, simetri, penalaran spasial dan bilangan, serta kreasi bebas.
 | **Tiru** | Template putus-putus utuh | Kontrol motorik halus | dasar |
 | **Titik** | Hanya titik-titik di sepanjang bentuk | Menyambung arah, memperkirakan garis | dasar |
 | **Langkah** | Bagian gambar muncul satu per satu; bagian berikutnya terbuka setelah bagian kini cukup tergambar | Konstruksi dari bentuk dasar, urutan menggambar | x1,1 |
-| **Kilat** | Template tampil 3 detik lalu hilang | Ingatan visual | x1,35 |
+| **Kilat** | Template tampil 3 detik lalu hilang | Ingatan visual | x1,2, setelah disejajarkan |
 | **Cermin** | Separuh kiri template dan garis sumbu; goresan otomatis dicerminkan | Simetri | dasar |
 | **Nalar** | Teka-teki dari Noko yang dijawab dengan menggambar atau mewarnai (lihat bagian 6) | Penalaran spasial dan bilangan | per teka-teki |
 | **Duel Hantu** | Template dan hantu menggambar bersamaan, bilah kemajuan keduanya | Presisi di bawah tantangan ringan | dasar |
@@ -60,6 +60,12 @@ ingatan visual, simetri, penalaran spasial dan bilangan, serta kreasi bebas.
 
 Aturan mode:
 - Mode Cermin hanya dipakai pada template yang simetris kiri dan kanan (diuji otomatis).
+- Mode Kilat menilai **bentuk, bukan posisi**. Gambar dari ingatan wajar bergeser dan sedikit lebih besar atau
+  kecil, jadi sebelum dinilai tinta disejajarkan ke template (digeser dan diskalakan seragam 0,7 sampai 1,4 kali,
+  tanpa putar). Penyejajaran hanya dipakai bila tinta benar-benar menempel pada bentuk (rata-rata jarak 80% tinta
+  terdekat paling banyak 0,34 kali toleransi); coretan tidak mendapat penyejajaran. Peta Ketepatan menampilkan
+  goresan dalam posisi yang sudah disejajarkan. Penilaian per goresan di Kilat dilonggarkan dua kali, dan Noko
+  tidak menyuruh "ikuti garis" karena garisnya memang tidak tampil.
 - Mode ditetapkan per level di data level, tidak dari posisi urut.
 - Tombol **Bantu aku** (template terang 4 detik, sekali per percobaan) tersedia di Tiru, Titik,
   Langkah, dan Cermin. Kilat memakai Lampu Noko; Duel tidak punya bantuan; Nalar memakai petunjuk
@@ -441,3 +447,7 @@ Konten v3.2 (`node tests/run-content.js`):
     sempurna selalu 3 bintang (diuji 120 hari).
 23. Hadiah harian hanya sekali per hari dan hanya bila target tercapai; hari beruntun bertambah dan kembali ke 1
     setelah hari bolong; 5 hari beruntun memberi lencana Rajin Harian.
+24. Kilat: bentuk yang tepat tetapi bergeser sampai 8 satuan atau berskala 0,85 sampai 1,15 tetap 3 bintang.
+25. Kilat: gambar ingatan sedang (geser dan skala acak, tiap bagian meleset sampai 3 satuan) tidak pernah 0 bintang
+    dan rata-rata minimal 2 bintang; coretan tetap 0 bintang di semua level Kilat.
+26. Mode selain Kilat tetap menilai posisi (tidak disejajarkan).

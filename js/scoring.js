@@ -109,6 +109,56 @@ KA.scoring = (function () {
     return n ? sum / n : 0;
   }
 
+  /* ---------- penyejajaran bentuk (mode Kilat) ----------
+     Gambar dari ingatan wajar bergeser dan sedikit lebih besar/kecil. Sebelum dinilai, tinta digeser dan
+     diskalakan seragam (tanpa putar) agar paling pas dengan template: inisialisasi dari kotak pembatas,
+     lalu beberapa putaran ICP dengan 20% pasangan terjauh dibuang supaya goresan nyasar tidak menarik hasil. */
+  const ALIGN_S = [0.7, 1.4];
+  function boxOf(pts, gx, gy) {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const p of pts) { const x = gx(p), y = gy(p); if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    return { cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, w: x1 - x0, h: y1 - y0 };
+  }
+  function alignParams(level, ink, tol) {
+    const id = { s: 1, tx: 0, ty: 0 };
+    if (ink.length < 8) return id;
+    const clampS = (v) => Math.max(ALIGN_S[0], Math.min(ALIGN_S[1], v));
+    const bi = boxOf(ink, AX, AY), bt = boxOf(level._pts, TX, TY);
+    const di = Math.max(bi.w, bi.h), dt = Math.max(bt.w, bt.h);
+    let s = di > 1 ? clampS(dt / di) : 1;
+    let tx = bt.cx - s * bi.cx, ty = bt.cy - s * bi.cy;
+    const step = Math.max(1, Math.floor(ink.length / 500));
+    const sample = ink.filter((_, i) => i % step === 0);
+    const grid = prepare(level);
+    for (let it = 0; it < 10; it++) {
+      const pairs = [];
+      for (const [x, y] of sample) {
+        const px = s * x + tx, py = s * y + ty;
+        const n = nearestIdx(grid, level._pts, TX, TY, px, py, 20);
+        if (n.i >= 0) pairs.push([x, y, level._pts[n.i].x, level._pts[n.i].y, n.d]);
+      }
+      if (pairs.length < 8) break;
+      pairs.sort((a, b) => a[4] - b[4]);
+      const keep = pairs.slice(0, Math.max(8, Math.floor(pairs.length * 0.8)));
+      let pcx = 0, pcy = 0, qcx = 0, qcy = 0;
+      for (const [x, y, qx, qy] of keep) { pcx += x; pcy += y; qcx += qx; qcy += qy; }
+      pcx /= keep.length; pcy /= keep.length; qcx /= keep.length; qcy /= keep.length;
+      let num = 0, den = 0;
+      for (const [x, y, qx, qy] of keep) { num += (x - pcx) * (qx - qcx) + (y - pcy) * (qy - qcy); den += (x - pcx) ** 2 + (y - pcy) ** 2; }
+      const ns = den > 1e-6 ? clampS(num / den) : s;
+      const ntx = qcx - ns * pcx, nty = qcy - ns * pcy;
+      const moved = Math.abs(ns - s) * 50 + Math.abs(ntx - tx) + Math.abs(nty - ty);
+      s = ns; tx = ntx; ty = nty;
+      if (moved < 0.05) break;
+    }
+    /* Penyejajaran hanya dipercaya bila tinta benar-benar menempel pada bentuk: rata-rata jarak 80% tinta
+       terdekat ≤ 0,34 × toleransi. Gambar ingatan yang jujur ≤ 0,32; coretan ≥ 0,35 (diukur di uji). */
+    const ds = sample.map(([x, y]) => Math.min(30, nearestIdx(grid, level._pts, TX, TY, s * x + tx, s * y + ty, 30).d)).sort((a, b) => a - b);
+    const k = ds.slice(0, Math.max(1, Math.floor(ds.length * 0.8)));
+    const fit = k.reduce((a, b) => a + b, 0) / k.length / tol;
+    return fit <= 0.34 ? { s, tx, ty, fit } : { s: 1, tx: 0, ty: 0, fit, rejected: true };
+  }
+
   function gradeOf(score) {
     return score >= 950 ? "S" : score >= 850 ? "A" : score >= 700 ? "B" : score >= 550 ? "C" : "D";
   }
@@ -125,13 +175,20 @@ KA.scoring = (function () {
     const tolMul = opts.tolMul || 1;
     const tol = level.tol * tolMul;
     const T = level._pts;
-    const rs = (strokes || []).map((s) => resample(ptsOf(s), 1)).filter((r) => r.length);
+    let raw = (strokes || []).map(ptsOf).filter((p) => p && p.length);
+    let align = null;
+    if (opts.align != null ? opts.align : level.mode === "kilat") {
+      align = alignParams(level, raw.map((p) => resample(p, 1)).flat(), tol);
+      const { s, tx, ty } = align;
+      raw = raw.map((p) => p.map(([x, y]) => [s * x + tx, s * y + ty]));
+    }
+    const rs = raw.map((p) => resample(p, 1)).filter((r) => r.length);
     const ink = rs.flat();
     const empty = {
       precision: 0, cover: 0, neat: 0, smooth: 0, acc: 0, comp: 0, core: 0, score: 0,
       grade: "D", stars: 0, perfect: false, assisted: !!opts.assisted,
       parts: level._parts.map(() => 0), ptState: new Uint8Array(T.length),
-      inkLen: 0, inkRatio: 0, strokeCount: 0,
+      inkLen: 0, inkRatio: 0, strokeCount: 0, align,
     };
     if (ink.length < 2) return empty;
 
@@ -199,7 +256,7 @@ KA.scoring = (function () {
       score, grade: gradeOf(score), stars: starsOf(score), perfect,
       assisted: !!opts.assisted,
       parts: partFrac,
-      ptState, inkLen, inkRatio, strokeCount: rs.length,
+      ptState, inkLen, inkRatio, strokeCount: rs.length, align,
     };
   }
 

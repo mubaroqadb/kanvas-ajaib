@@ -160,5 +160,31 @@ console.log("\n[3] Tantangan Harian");
     })());
 }
 
+console.log("\n[4] Mode Kilat menilai bentuk, bukan posisi");
+{
+  const kil = L.drawingLevels().filter((l) => l.mode === "kilat");
+  const r = rng(99);
+  const moved = (lv, dx, dy, s) => lv._polylines.map((pl) => ({ pts: dens(pl).map(([x, y]) => [50 + (x - 50) * s + dx, 50 + (y - 50) * s + dy]) }));
+  const bad = [];
+  for (const lv of kil) for (const [dx, dy, s] of [[8, -6, 1], [-7, 5, 1.15], [5, 4, 0.85]]) {
+    const e = S.evaluate(lv, moved(lv, dx, dy, s));
+    if (e.stars < 3) bad.push(`${lv.name} (${dx},${dy},${s}) ${e.score}`);
+  }
+  check("bentuk tepat yang bergeser atau berubah ukuran tetap 3 bintang", !bad.length, bad.slice(0, 5).join("; "));
+  /* gambar ingatan realistis: geser & skala acak, tiap bagian meleset sendiri, tangan bergetar */
+  const memory = (lv) => {
+    const dx = (r() - 0.5) * 16, dy = (r() - 0.5) * 16, sx = 0.85 + r() * 0.3, sy = sx * (0.92 + r() * 0.16);
+    return lv._polylines.map((pl) => {
+      const ox = (r() - 0.5) * 6, oy = (r() - 0.5) * 6;
+      return { pts: dens(pl).map(([x, y]) => [50 + (x - 50) * sx + dx + ox + (r() - 0.5) * 0.4, 50 + (y - 50) * sy + dy + oy + (r() - 0.5) * 0.4]) };
+    });
+  };
+  let zero = 0, sum = 0, n = 0;
+  for (const lv of kil) for (let k = 0; k < 10; k++) { const e = S.evaluate(lv, memory(lv)); if (e.stars === 0) zero++; sum += e.stars; n++; }
+  check("gambar ingatan sedang: tidak ada 0 bintang, rata-rata ≥2 bintang", zero === 0 && sum / n >= 2, `0 bintang: ${zero}, rata-rata ${(sum / n).toFixed(2)}`);
+  const tiru = L.drawingLevels().find((l) => l.mode === "tiru");
+  check("mode Tiru tetap menilai posisi (tidak disejajarkan)", S.evaluate(tiru, moved(tiru, 8, -6, 1)).stars < 3 && !S.evaluate(tiru, moved(tiru, 8, -6, 1)).align);
+}
+
 console.log(`\n${pass} lulus, ${fail} gagal`);
 process.exitCode = fail ? 1 : 0;

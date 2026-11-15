@@ -1,5 +1,5 @@
 /* Kanvas Ajaib: service worker: cache-first untuk semua aset (aktif hanya via http/https) */
-const VERSION = "ka-v3.2.3";
+const VERSION = "ka-v3.2.4";
 const ASSETS = [
   "./",
   "./index.html",

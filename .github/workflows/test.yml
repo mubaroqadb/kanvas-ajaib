@@ -22,3 +22,5 @@ jobs:
         run: node tests/run-reason.js
       - name: Uji konten (set soal, Pulau 5, Tantangan Harian)
         run: node tests/run-content.js
+      - name: Uji gambar pena dan jari (bentuk Nalar)
+        run: node tests/run-pena.js

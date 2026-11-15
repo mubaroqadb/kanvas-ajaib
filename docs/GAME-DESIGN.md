@@ -144,8 +144,9 @@ lencana). Goresan liar mereset dengan suara lembut.
 ## 6. Tantangan Nalar
 
 Sepuluh teka-teki, dua per pulau, dengan topik yang naik bertahap. Setiap teka-teki punya **tiga set
-soal** yang dipakai bergiliran: percobaan ke-n memakai set ke-(n mod 3), sehingga mengulang teka-teki selalu
-memberi soal baru dengan topik yang sama. Jawaban selalu diberikan lewat
+soal**. Selama teka-teki belum berhasil dipecahkan, anak mengulang soal yang sama (termasuk di Mode Bantu); set
+berikutnya baru muncul setelah teka-teki itu berhasil, sehingga bermain ulang memberi soal baru dengan topik yang
+sama. Jawaban selalu diberikan lewat
 menggambar atau mewarnai, lalu diperiksa oleh penilai matematis. Banyak teka-teki menerima lebih dari
 satu jawaban benar.
 
@@ -185,8 +186,10 @@ gambarnya.
 
 ### 6c. Penilai matematis
 
-- Goresan yang bersambung digabung, disederhanakan menjadi poligon, dan bila kertasnya berkisi titik
-  sudutnya ditempelkan ke titik kisi terdekat.
+- Goresan yang bersambung digabung (sisi yang digambar terpisah boleh bercelah atau lewat sudut sampai 0,8 kotak),
+  disederhanakan menjadi poligon, dan bila kertasnya berkisi titik sudutnya ditempelkan ke titik kisi terdekat.
+  Kelurusan dinilai terhadap poligon sebelum ditempel ke kisi, dan panjang tinta diukur dari goresan yang
+  dihaluskan supaya getaran mikro pena (Apple Pencil) tidak terhitung sebagai garis bergelombang.
 - Dari poligon dihitung: tertutup atau tidak, jumlah sisi dan sudut, panjang sisi dalam satuan
   kotak, sudut siku (toleransi 12 derajat), sisi sejajar, dan luas.
 - Pengenal bentuk dasar untuk Pola Berulang: lingkaran (tertutup, tanpa sudut, bulat), segitiga,
@@ -356,7 +359,8 @@ menyediakan ekspor lokal.
   membutuhkan satuan kotak). Goresan dihaluskan, tajam di layar retina, dan sentuhan telapak tangan
   ditolak saat sedang menggambar.
 - **Pena:** 3 ukuran yang cukup tipis untuk detail kecil (mata, jendela).
-- **Hapus semua:** butuh ketukan kedua untuk konfirmasi; ikonnya tempat sampah.
+- **Hapus semua:** satu ketukan langsung mengosongkan kanvas, dan Urungkan mengembalikan semuanya; ikonnya
+  tempat sampah. Noko memberi tahu bahwa hapusan bisa diurungkan.
 - **Audio:** WebAudio sintetis yang dijadwalkan pada jam audio agar tidak tersendat. Ada lagu per
   pulau (5 lagu) dan Kotak Musik, serta SFX pena, kilau, bagian selesai, sihir hidup, ember cat, stiker,
   bintang, jawaban benar, dan fanfare.
@@ -451,3 +455,7 @@ Konten v3.2 (`node tests/run-content.js`):
 25. Kilat: gambar ingatan sedang (geser dan skala acak, tiap bagian meleset sampai 3 satuan) tidak pernah 0 bintang
     dan rata-rata minimal 2 bintang; coretan tetap 0 bintang di semua level Kilat.
 26. Mode selain Kilat tetap menilai posisi (tidak disejajarkan).
+27. Penilai bentuk Nalar menerima gambar rapi dari pena atau jari: satu goresan dengan getaran pena, bergeser dari
+    kisi, dan sisi yang digambar terpisah dengan celah atau lewat sudut sampai setengah kotak
+    (`node tests/run-pena.js`); zigzag dan spiral tetap ditolak.
+

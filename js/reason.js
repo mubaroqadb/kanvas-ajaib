@@ -181,7 +181,10 @@ KA.reason = (function () {
     opts = opts || {};
     const G = gridOf(opts);
     const allPts = (strokes || []).map(ptsOf).filter((p) => p.length);
-    const totalInk = allPts.reduce((s, p) => s + plen(p), 0);
+    /* panjang tinta diukur dari goresan yang dihaluskan: titik rapat dari pena (Apple Pencil) dengan getaran
+       mikro membuat garis lurus terukur jauh lebih panjang dari aslinya */
+    const smoothLen = (p) => (p.length > 2 ? plen(simplify(p, 0.5)) : plen(p));
+    const totalInk = allPts.reduce((s, p) => s + smoothLen(p), 0);
     const base = { empty: true, closed: false, verts: [], sides: 0, corners: 0, sideLens: [], angles: [], rightAngles: 0,
       parallelPairs: 0, area: 0, perimeter: 0, fitErr: 1, inkRatio: 0, isCircle: false, scribble: true, kind: null,
       size: 0, grid: G ? G.size : null, ideal: [] };
@@ -189,18 +192,19 @@ KA.reason = (function () {
 
     const ball = bbox(allPts.flat());
     const sizeAll = Math.max(ball.w, ball.h, 1);
-    const chains = joinStrokes(strokes, Math.max(2.5, 0.12 * sizeAll, G ? 0.45 * G.size : 0));
-    chains.sort((a, b) => plen(b) - plen(a));
+    /* sisi yang digambar terpisah boleh bercelah atau lewat sudut sampai ±0,8 kotak */
+    const chains = joinStrokes(strokes, Math.max(2.5, 0.2 * sizeAll, G ? 0.8 * G.size : 0));
+    chains.sort((a, b) => smoothLen(b) - smoothLen(a));
     const main = chains[0];
-    const mainLen = plen(main);
+    const mainLen = smoothLen(main);
     const extraInk = totalInk - mainLen;
     let raw = resample(main, 1);
     const bb = bbox(raw);
     const size = Math.max(bb.w, bb.h, 1);
 
     /* tertutup? (celah kecil atau melewati titik awal) */
-    let ct = Math.max(2.5, 0.15 * size);
-    if (G) ct = Math.max(ct, 0.5 * G.size);
+    let ct = Math.max(2.5, 0.2 * size);
+    if (G) ct = Math.max(ct, 0.8 * G.size);
     let closed = false;
     const n0 = raw.length;
     if (n0 > 4 && dist(raw[0], raw[n0 - 1]) <= ct) closed = true;
@@ -216,8 +220,10 @@ KA.reason = (function () {
 
     const res = Object.assign({}, base, { empty: false, closed, size });
     const eps = Math.max(1.8, 0.05 * size);
-    const minEdge = 0.12 * size;
-    let verts;
+    /* potongan sudut dan tonjolan dari sisi yang digambar terpisah ikut digabung; di kertas berkisi
+       batasnya 0,75 kotak supaya sisi asli sependek 1 kotak tetap utuh */
+    const minEdge = G ? Math.min(0.2 * size, Math.max(0.12 * size, 0.75 * G.size)) : 0.2 * size;
+    let verts, fitVerts;
 
     if (closed) {
       const loop = raw.concat([raw[0]]);
@@ -226,9 +232,20 @@ KA.reason = (function () {
       /* gabung sisi pendek (sudut membulat) lalu buang titik segaris */
       for (let guard = 0; guard < 200 && ids.length > 3; guard++) {
         const m = ids.length;
+        /* sisi yang digabung: sangat pendek, atau pendek dan "memotong sudut" (kedua belokannya landai,
+           khas celah di sudut saat sisi digambar terpisah); sisi pendek bersudut siku tetap dipertahankan */
+        const P = (k) => loop[ids[((k % m) + m) % m]];
+        const cutsCorner = (k) => {
+          const t1 = turnAt(P(k - 1), P(k), P(k + 1)), t2 = turnAt(P(k), P(k + 1), P(k + 2));
+          return t1 >= 20 && t1 <= 70 && t2 >= 20 && t2 <= 70;
+        };
         let si = -1, sl = Infinity;
-        for (let k = 0; k < m; k++) { const l = dist(loop[ids[k]], loop[ids[(k + 1) % m]]); if (l < sl) { sl = l; si = k; } }
-        if (sl < minEdge) {
+        for (let k = 0; k < m; k++) {
+          const l = dist(P(k), P(k + 1));
+          const ok = l < minEdge || (m > 3 && l < 0.2 * size && cutsCorner(k));
+          if (ok && l < sl) { sl = l; si = k; }
+        }
+        if (si >= 0) {
           const a = ids[si], b = ids[(si + 1) % m];
           const mid = b > a ? Math.floor((a + b) / 2) : Math.floor((a + b + N) / 2) % N;
           ids = [...new Set(ids.filter((x) => x !== a && x !== b).concat([mid]))].sort((x, y) => x - y);
@@ -257,10 +274,12 @@ KA.reason = (function () {
         const p = m >= 3 ? intersect(lines[(k - 1 + m) % m], lines[k]) : null;
         return p && dist(p, loop[id]) < 0.3 * size ? p : loop[id].slice();
       });
+      fitVerts = cleanVerts(verts, true, 8);
       if (G) verts = verts.map((p) => snapPt(p, G));
       verts = cleanVerts(verts, true, G ? 3 : 8);
     } else {
       verts = rdp(raw, eps).map((i) => raw[i].slice());
+      fitVerts = cleanVerts(verts, false, 25);
       if (G) verts = verts.map((p) => snapPt(p, G));
       verts = cleanVerts(verts, false, G ? 3 : 25);
     }
@@ -292,8 +311,10 @@ KA.reason = (function () {
     res.parallelPairs = pp;
 
     /* kecocokan tinta dengan poligon & rasio tinta */
+    /* kelurusan dinilai terhadap poligon sebelum sudutnya ditempel ke kisi */
     let fe = 0;
-    for (const p of raw) fe += polyDist(p, verts, closed && n >= 3);
+    const fv = fitVerts && fitVerts.length >= 2 ? fitVerts : verts;
+    for (const p of raw) fe += polyDist(p, fv, closed && fv.length >= 3);
     res.fitErr = raw.length ? fe / raw.length / size : 1;
     res.inkRatio = res.perimeter ? totalInk / res.perimeter : Infinity;
 

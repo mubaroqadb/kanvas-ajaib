@@ -4,6 +4,6 @@
   "description": "Game menggambar petualangan untuk anak 8-11 tahun",
   "license": "MIT",
   "scripts": {
-    "test": "node tests/run.js && node tests/run-art.js && node tests/run-reason.js && node tests/run-content.js"
+    "test": "node tests/run.js && node tests/run-art.js && node tests/run-reason.js && node tests/run-content.js && node tests/run-pena.js"
   }
 }

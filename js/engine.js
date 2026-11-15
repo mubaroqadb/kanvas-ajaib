@@ -15,7 +15,7 @@ KA.engine = (function () {
   const GHOST_MS = 12000;   // durasi hantu sintetis
   const GHOST_COLOR = "#9B7BE0";
   const STAMP_SIZE = 12;
-  const MIN_STEP = 0.3;     // jarak minimum antartitik (satuan)
+  const MIN_STEP = 0.6;     // jarak minimum antartitik (satuan); menyaring getaran mikro pena (Apple Pencil ±240 titik/dtk)
   const DRAWABLE = { draw: 1, memory: 1, duel: 1, free: 1, color: 1, puzzle: 1 };
 
   /* ---------- kanvas ---------- */
@@ -865,6 +865,14 @@ KA.engine = (function () {
       renderPaint(true);
     } else if (a.kind === "stamp") {
       stamps.pop();
+    } else if (a.kind === "clear") {
+      /* hapus semua bisa diurungkan: kembalikan goresan, isian, stiker, riwayat, dan langkah */
+      const s = a.save;
+      strokes = strokes.slice(0, fixedCount).concat(s.strokes);
+      fills = s.fills; stamps = s.stamps; actions = s.actions;
+      if (mode === "langkah") step = s.step;
+      if (live) live.rebuild(strokes);
+      renderPaint(true);
     }
     redrawDraw();
     tplDirty = true;
@@ -873,10 +881,13 @@ KA.engine = (function () {
     return true;
   }
 
+  /* Hapus semua langsung bekerja (satu ketukan) dan tercatat sebagai satu aksi, jadi Urungkan mengembalikannya. */
   function clearAll() {
     stopLoopInput();
+    if (strokes.length <= fixedCount && !fills.length && !stamps.length) return false;
+    const save = { strokes: strokes.slice(fixedCount), fills: fills.slice(), stamps: stamps.slice(), actions: actions.slice(), step };
     strokes = strokes.slice(0, fixedCount);
-    fills = []; stamps = []; actions = [];
+    fills = []; stamps = []; actions = [{ kind: "clear", save }];
     if (live) live.reset();
     if (mode === "langkah") step = 0;
     renderPaint(true);
@@ -884,6 +895,7 @@ KA.engine = (function () {
     tplDirty = true;
     resetStreak();
     emit("changed");
+    return true;
   }
 
   function canFinish() {

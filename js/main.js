@@ -635,9 +635,9 @@ KA.main = (function () {
   const MAX_WRONG = 3; /* salah ke-3 pada satu soal mengakhiri percobaan (bisa Coba Lagi / Mode Bantu) */
 
   function startNalar(lv, opts = {}) {
-    /* set soal bergiliran: percobaan ke-n memakai set n mod jumlah set */
-    const tries = (D().attempts || []).filter((a) => a.puzzleId === lv.puzzleId).length;
-    const pz = KA.puzzles.use ? KA.puzzles.use(lv.puzzleId, tries) : KA.puzzles.get(lv.puzzleId);
+    /* soal yang sama diulang sampai berhasil; set berikutnya baru muncul setelah teka-teki ini dipecahkan */
+    const solved = (D().attempts || []).filter((a) => a.puzzleId === lv.puzzleId && (a.stars || 0) >= 1).length;
+    const pz = KA.puzzles.use ? KA.puzzles.use(lv.puzzleId, solved) : KA.puzzles.get(lv.puzzleId);
     if (!pz) return goHome();
     sfx("click");
     const assisted = !!opts.assisted;
@@ -932,7 +932,12 @@ KA.main = (function () {
   function wireGame() {
     $("btnBack").addEventListener("click", goHome);
     $("btnUndo").addEventListener("click", () => { E().undo(); syncActions(); });
-    UI().twoTap($("btnClear"), () => { E().clearAll(); setStreak(1); syncActions(); }, "Yakin?");
+    /* satu ketukan langsung menghapus; Urungkan mengembalikan semuanya */
+    $("btnClear").addEventListener("click", () => {
+      if (E().clearAll()) { sfx("undo"); say("Bersih! Bisa diurungkan", "happy", true); }
+      setStreak(1);
+      syncActions();
+    });
     $("btnHint").addEventListener("click", () => {
       if (G && G.kind === "nalar") return nalarHint();
       if (E().showHint()) { sfx("click"); say("Lihat baik-baik!", "wow", true); }
